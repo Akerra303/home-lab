@@ -1,82 +1,79 @@
 services:
+  #Catálogo de series
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=${TZ}
     volumes:
-      - ./conf/sonarr:/config
-      - ./data/tv:/tv #optional
-      - ./data/downloads:/downloads #optional
+      - ${CONF_PATH}/sonarr:/config
+      - ${DATA_PATH}/tv:/tv
+      - ${DOWNLOADS_PATH}:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
 
+  #Catálogo de películas
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=${TZ}
     volumes:
-      - ./conf/radarr:/config
-      - ./data/movies:/movies #optional
-      - ./data/downloads:/downloads #optional
+      - ${CONF_PATH}/radarr:/config
+      - ${DATA_PATH}/movies:/movies
+      - ${DOWNLOADS_PATH}:/downloads
     ports:
       - 7878:7878
     restart: unless-stopped
 
+  #Indexador de torrents
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=${TZ}
     volumes:
-      - ./conf/prowlarr:/config
+      - ${CONF_PATH}/prowlarr:/config
     ports:
       - 9696:9696
     restart: unless-stopped
 
+  #Cliente de descarga
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     container_name: transmission
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
-      - TRANSMISSION_WEB_HOME= #optional
-      - USER= #optional
-      - PASS= #optional
-      - WHITELIST= #optional
-      - PEERPORT= #optional
-      - HOST_WHITELIST= #optional
+      - TZ=${TZ}
     volumes:
-      - ./conf/transmission:/config
-      - ./data/downloads:/downloads
-        #  - /path/to/watch/folder:/watch
+      - ${CONF_PATH}/transmission:/config
+      - ${DOWNLOADS_PATH}:/downloads
     ports:
       - 9091:9091
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
 
+  #Biblioteca multimedia
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
-      - JELLYFIN_PublishedServerUrl=192.168.0.5 #optional
+      - TZ=${TZ}
     volumes:
-      - ./conf/jellyfin:/config
-      - ./data/tv:/data/tvshows
-      - ./data/movies:/data/movies
+      - ${CONF_PATH}/jellyfin:/config
+      - ${DATA_PATH}tv:/data/tvshows
+      - ${DATA_PATH}movies:/data/movies
     ports:
       - 8096:8096
     restart: unless-stopped
